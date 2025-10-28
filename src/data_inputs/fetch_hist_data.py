@@ -9,12 +9,15 @@ from typing import Optional
 from tinkoff.invest.utils import now
 
 
+KEY = '/home/mltx/Documents/Projects/goblin-v1/config/api_keys.env'
+
+
 class HistoricalDataDownloader:
     def __init__(self, token: str, figi: str, days_back: int = 365, interval: str = '1d'):
         self.token = token
         self.figi = figi
         self.days_back = days_back
-        self.base_dir = '/home/mltx/goblin-v1/data/raw/prices/'
+        self.base_dir = '/home/mltx/Documents/Projects/goblin-v1/data/raw/prices/'
         self.interval = {
             '1d': CandleInterval.CANDLE_INTERVAL_DAY,
             '1w': CandleInterval.CANDLE_INTERVAL_WEEK,
@@ -26,11 +29,11 @@ class HistoricalDataDownloader:
         """Конвертирует свечу в словарь с автоматическим преобразованием quotation"""
         return {
             'time': candle.time,
-            'volume': candle.volume,
             'open': float(quotation_to_decimal(candle.open)),
-            'close': float(quotation_to_decimal(candle.close)),
             'high': float(quotation_to_decimal(candle.high)),
             'low': float(quotation_to_decimal(candle.low)),
+            'close': float(quotation_to_decimal(candle.close)),
+            'volume': candle.volume,
         }
 
     def _get_filename(self, from_: datetime, to: datetime) -> str:
@@ -69,7 +72,7 @@ class HistoricalDataDownloader:
 
 
 if __name__ == "__main__":
-    load_dotenv('/home/mltx/goblin-v1/config/api_keys.env')
+    load_dotenv(KEY)
     TOKEN = os.getenv('TINKOFF_TOKEN')
     FIGI = "BBG004730N88"  # SBER
 
