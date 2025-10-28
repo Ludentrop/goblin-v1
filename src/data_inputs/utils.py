@@ -1,5 +1,20 @@
 import re
 from datetime import datetime, timedelta
+from pathlib import Path
+from dotenv import load_dotenv
+import inspect
+
+def load_env_from_caller():
+    caller_frame = inspect.stack()[1]
+    caller_file = Path(caller_frame.filename).resolve()
+    current_dir = caller_file.parent
+
+    for parent in [current_dir, *current_dir.parents]:
+        env_file = parent / ".env"
+        if env_file.is_file():
+            load_dotenv(env_file)
+            return parent
+    raise FileNotFoundError("Файл .env не найден в иерархии проекта")
 
 
 def clean_text(text):

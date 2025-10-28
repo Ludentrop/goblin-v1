@@ -1,6 +1,6 @@
 import os
+from pathlib import Path
 import pandas as pd
-from dotenv import load_dotenv
 from datetime import datetime, timedelta
 
 from tinkoff.invest import Client, CandleInterval
@@ -8,16 +8,23 @@ from tinkoff.invest.utils import quotation_to_decimal
 from typing import Optional
 from tinkoff.invest.utils import now
 
+from utils import load_env_from_caller
 
-KEY = '/home/mltx/Documents/Projects/goblin-v1/config/api_keys.env'
 
 
 class HistoricalDataDownloader:
-    def __init__(self, token: str, figi: str, days_back: int = 365, interval: str = '1d'):
+    def __init__(
+        self,
+        token: str,
+        figi: str,
+        days_back: int = 365,
+        interval: str = '1d',
+        base_dir=Path(__file__).parent):
+            
         self.token = token
         self.figi = figi
         self.days_back = days_back
-        self.base_dir = '/home/mltx/Documents/Projects/goblin-v1/data/raw/prices/'
+        self.base_dir = base_dir
         self.interval = {
             '1d': CandleInterval.CANDLE_INTERVAL_DAY,
             '1w': CandleInterval.CANDLE_INTERVAL_WEEK,
@@ -72,11 +79,16 @@ class HistoricalDataDownloader:
 
 
 if __name__ == "__main__":
-    load_dotenv(KEY)
+    root_dir = load_env_from_caller()
     TOKEN = os.getenv('TINKOFF_TOKEN')
+    base_dir = root_dir / 'data/raw/prices'
     FIGI = "BBG004730N88"  # SBER
 
     for interval in ['1d', '1w', '1m']:
-        downloader = HistoricalDataDownloader(token=TOKEN, figi=FIGI, days_back=365*5, interval=interval)
+        downloader = HistoricalDataDownloader(
+            token=TOKEN,
+            figi=FIGI,
+            days_back=365*5,
+            interval=interval,
+            base_dir=base_dir)
         downloader.download_data()
-
