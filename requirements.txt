@@ -7,6 +7,7 @@ backtrader==1.9.78.123
 requests==2.31.0
 tradingview-ta==3.3.0
 tinkoff-investments==0.2.0b100
+psycopg2==2.9.11
 asyncio==3.4.3
 python-dotenv==1.1.0
 pyarrow==20.0.0
