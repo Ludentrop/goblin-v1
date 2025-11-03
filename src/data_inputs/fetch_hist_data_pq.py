@@ -33,7 +33,6 @@ class HistoricalDataDownloader:
         os.makedirs(self.base_dir, exist_ok=True)
 
     def _convert_candle(self, candle) -> dict:
-        """Конвертирует свечу в словарь с автоматическим преобразованием quotation"""
         return {
             'time': candle.time,
             'open': float(quotation_to_decimal(candle.open)),
@@ -44,14 +43,12 @@ class HistoricalDataDownloader:
         }
 
     def _get_filename(self, from_: datetime, to: datetime) -> str:
-        """Генерирует имя файла на основе дат"""
         return os.path.join(
             self.base_dir,
             f"{self.figi}_{from_.strftime('%Y%m%d')}_{to.strftime('%Y%m%d')}_{self.interval.name.split('_')[-1]}.parquet"
         )
 
     def download_data(self) -> Optional[str]:
-        """Загружает исторические данные и сохраняет в файл"""
         end_date = datetime.utcnow()
         start_date = end_date - timedelta(days=self.days_back)
 
